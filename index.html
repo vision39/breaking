@@ -68,6 +68,17 @@
       color: red;
       font-weight: bold;
     }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background-color: #d32f2f;
+    }
   </style>
 </head>
 <body>
@@ -137,6 +148,7 @@
           <th id="header2">Player 2</th>
           <th id="header3">Player 3</th>
           <th id="header4">Player 4</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -247,6 +259,14 @@
         }
       }
 
+      // Add a delete button for this round
+      let deleteCell = newRow.insertCell(5);
+      let deleteButton = document.createElement("button");
+      deleteButton.textContent = "Delete";
+      deleteButton.classList.add("delete-btn");
+      deleteButton.onclick = () => deleteRound(newRow, roundCount-1); // Pass the row and round index to the delete function
+      deleteCell.appendChild(deleteButton);
+
       // Update the total row
       document.getElementById("total1").textContent = totalScores[0];
       document.getElementById("total2").textContent = totalScores[1];
@@ -265,6 +285,37 @@
       // Show bet section for the next round
       document.getElementById("scoreSection").style.display = "none";
       document.getElementById("betSection").style.display = "block";
+    }
+
+    // Function to delete a round
+    function deleteRound(row, roundIndex) {
+      // Remove the round from the table
+      row.remove();
+
+      // Update total scores by recalculating based on the remaining rounds
+      totalScores = [0, 0, 0, 0]; // Reset the scores
+      let tableRows = document.getElementById("scoreTable").getElementsByTagName('tbody')[0].rows;
+      for (let i = 0; i < tableRows.length; i++) {
+        let cells = tableRows[i].cells;
+        let roundScores = cells;
+        for (let j = 0; j < 4; j++) {
+          let bet = parseInt(roundScores[j+1].textContent.split('Bet(')[1].split(')')[0]);
+          let score = parseInt(roundScores[j+1].textContent.split('Score(')[1].split(')')[0]);
+          
+          // Update total scores
+          if (score >= bet) {
+            totalScores[j] += bet;
+          } else {
+            totalScores[j] -= bet;
+          }
+        }
+      }
+
+      // Update the total row
+      document.getElementById("total1").textContent = totalScores[0];
+      document.getElementById("total2").textContent = totalScores[1];
+      document.getElementById("total3").textContent = totalScores[2];
+      document.getElementById("total4").textContent = totalScores[3];
     }
   </script>
 
