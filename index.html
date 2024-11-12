@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Call Break Score Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #4CAF50;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .input-section {
+      margin-bottom: 20px;
+    }
+    .input-section input {
+      padding: 10px;
+      margin: 5px 0;
+      width: 100%;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+    .input-section button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .input-section button:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 8px 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    td {
+      background-color: #f9f9f9;
+    }
+    .negative {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Call Break Score Tracker</h1>
+
+  <div class="container">
+    <div class="input-section" id="nameSection">
+      <h2>Enter Player Names</h2>
+      
+      <!-- Player Name Inputs -->
+      <label for="player1">Player 1 Name:</label>
+      <input type="text" id="player1" placeholder="Enter Player 1 name">
+      <label for="player2">Player 2 Name:</label>
+      <input type="text" id="player2" placeholder="Enter Player 2 name">
+      <label for="player3">Player 3 Name:</label>
+      <input type="text" id="player3" placeholder="Enter Player 3 name">
+      <label for="player4">Player 4 Name:</label>
+      <input type="text" id="player4" placeholder="Enter Player 4 name">
+
+      <button onclick="setPlayerNames()">Set Player Names</button>
+    </div>
+
+    <div class="input-section" id="betSection" style="display: none;">
+      <h2>Enter Player Bets</h2>
+      
+      <!-- Player Inputs for Bets -->
+      <label for="bet1">Player 1 Bet:</label>
+      <input type="number" id="bet1" placeholder="Enter Player 1 bet">
+      
+      <label for="bet2">Player 2 Bet:</label>
+      <input type="number" id="bet2" placeholder="Enter Player 2 bet">
+      
+      <label for="bet3">Player 3 Bet:</label>
+      <input type="number" id="bet3" placeholder="Enter Player 3 bet">
+      
+      <label for="bet4">Player 4 Bet:</label>
+      <input type="number" id="bet4" placeholder="Enter Player 4 bet">
+
+      <button onclick="setBets()">Set Bets</button>
+    </div>
+
+    <div class="input-section" id="scoreSection" style="display: none;">
+      <h2>Enter Player Scores</h2>
+      
+      <!-- Player Inputs for Scores -->
+      <label for="score1">Player 1 Score:</label>
+      <input type="number" id="score1" placeholder="Enter Player 1 score">
+      
+      <label for="score2">Player 2 Score:</label>
+      <input type="number" id="score2" placeholder="Enter Player 2 score">
+      
+      <label for="score3">Player 3 Score:</label>
+      <input type="number" id="score3" placeholder="Enter Player 3 score">
+      
+      <label for="score4">Player 4 Score:</label>
+      <input type="number" id="score4" placeholder="Enter Player 4 score">
+
+      <button onclick="addRound()">Add Round</button>
+    </div>
+
+    <table id="scoreTable">
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th id="header1">Player 1</th>
+          <th id="header2">Player 2</th>
+          <th id="header3">Player 3</th>
+          <th id="header4">Player 4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Round Scores will be inserted here -->
+      </tbody>
+      <tfoot>
+        <!-- Total row will be inserted here -->
+        <tr id="totalRow">
+          <th>Total</th>
+          <td id="total1">0</td>
+          <td id="total2">0</td>
+          <td id="total3">0</td>
+          <td id="total4">0</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <script>
+    let roundCount = 1;
+    let playerNames = [];
+    let bets = [0, 0, 0, 0]; // Array to store bets
+    let totalScores = [0, 0, 0, 0]; // Array to track total scores for each player
+
+    function setPlayerNames() {
+      // Get player names from the input fields
+      let player1 = document.getElementById("player1").value;
+      let player2 = document.getElementById("player2").value;
+      let player3 = document.getElementById("player3").value;
+      let player4 = document.getElementById("player4").value;
+
+      // Check if all player names are provided
+      if (!player1 || !player2 || !player3 || !player4) {
+        alert("Please enter names for all players.");
+        return;
+      }
+
+      // Store player names
+      playerNames = [player1, player2, player3, player4];
+
+      // Set player names in the table headers
+      document.getElementById("header1").textContent = playerNames[0];
+      document.getElementById("header2").textContent = playerNames[1];
+      document.getElementById("header3").textContent = playerNames[2];
+      document.getElementById("header4").textContent = playerNames[3];
+
+      // Hide name section and show bet section
+      document.getElementById("nameSection").style.display = "none";
+      document.getElementById("betSection").style.display = "block";
+    }
+
+    function setBets() {
+      // Get player bets
+      let bet1 = parseInt(document.getElementById("bet1").value);
+      let bet2 = parseInt(document.getElementById("bet2").value);
+      let bet3 = parseInt(document.getElementById("bet3").value);
+      let bet4 = parseInt(document.getElementById("bet4").value);
+
+      // Check if all bets are provided
+      if (!bet1 || !bet2 || !bet3 || !bet4) {
+        alert("Please enter bets for all players.");
+        return;
+      }
+
+      // Store bets
+      bets = [bet1, bet2, bet3, bet4];
+
+      // Hide bet section and show score section
+      document.getElementById("betSection").style.display = "none";
+      document.getElementById("scoreSection").style.display = "block";
+    }
+
+    function addRound() {
+      // Get player scores
+      let score1 = parseInt(document.getElementById("score1").value);
+      let score2 = parseInt(document.getElementById("score2").value);
+      let score3 = parseInt(document.getElementById("score3").value);
+      let score4 = parseInt(document.getElementById("score4").value);
+
+      // Check if all scores are provided
+      if (!score1 || !score2 || !score3 || !score4) {
+        alert("Please enter scores for all players.");
+        return;
+      }
+
+      // Update total scores based on bets and scores
+      for (let i = 0; i < 4; i++) {
+        if (eval(`score${i+1}`) >= bets[i]) {
+          totalScores[i] += bets[i]; // Add bet to total score if score >= bet
+        } else {
+          totalScores[i] -= bets[i]; // Deduct bet from total score if score < bet
+        }
+      }
+
+      // Create a new row for the table
+      let table = document.getElementById("scoreTable").getElementsByTagName('tbody')[0];
+      let newRow = table.insertRow();
+
+      // Insert round number and scores into the table
+      newRow.insertCell(0).textContent = `Round ${roundCount}`;
+      for (let i = 0; i < 4; i++) {
+        let cell = newRow.insertCell(i + 1);
+        cell.textContent = `Bet(${bets[i]}) Score(${eval(`score${i+1}`)})`;
+        
+        // Add "negative" class if the player's total score is negative
+        if (totalScores[i] < 0) {
+          cell.classList.add('negative');
+        }
+      }
+
+      // Update the total row
+      document.getElementById("total1").textContent = totalScores[0];
+      document.getElementById("total2").textContent = totalScores[1];
+      document.getElementById("total3").textContent = totalScores[2];
+      document.getElementById("total4").textContent = totalScores[3];
+
+      // Increment round count for the next round
+      roundCount++;
+
+      // Clear input fields
+      document.getElementById("score1").value = "";
+      document.getElementById("score2").value = "";
+      document.getElementById("score3").value = "";
+      document.getElementById("score4").value = "";
+
+      // Show bet section for the next round
+      document.getElementById("scoreSection").style.display = "none";
+      document.getElementById("betSection").style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
